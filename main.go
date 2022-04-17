@@ -9,6 +9,9 @@ import (
 	"strings"
 	"syscall"
 
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -56,7 +59,7 @@ func main() {
 }
 
 type Gopher struct {
-	Name string `json: "name"`
+	Name string `json:"name"`
 }
 
 var Hyes = []string{"hi", "hello", "hallo", "aloha", "hey", "bonjour", "konnichiwa", "ciao",
@@ -76,7 +79,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if strings.HasPrefix(strings.ToLower(m.Content), b) {
 			fmt.Println(strings.Index(strings.ToLower(m.Content), b))
 			rand_greet := Hyes[rand.Intn(len(Hyes))]
-			_, err := s.ChannelMessageSend(m.ChannelID, strings.Title(rand_greet)+" "+m.Author.Mention())
+			caser := cases.Title(language.AmericanEnglish)
+			_, err := s.ChannelMessageSend(m.ChannelID, caser.String(rand_greet)+" "+m.Author.Mention())
 			if err != nil {
 				fmt.Println(err)
 			}
